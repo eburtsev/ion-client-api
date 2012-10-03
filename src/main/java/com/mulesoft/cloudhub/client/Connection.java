@@ -152,6 +152,15 @@ public class Connection {
     }
 
     /**
+     * Creates an application
+     * @param application application create info
+     */
+    public final void createApplication(final ApplicationCreateInfo application) {
+		final ClientResponse response = createBuilder("applications/").type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class, application);
+		handleErrors(response);
+	}
+
+    /**
      * @return all existing applications
      */
     public final List<Application> listApplications() {
