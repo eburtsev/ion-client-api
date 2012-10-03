@@ -53,6 +53,16 @@ public class DomainConnection extends Connection {
         return response.getEntity(Application.class);
     }
 
+    public final InputStream downloadZip() {
+        ensureCloudHubApplicationExists(getDomain());
+
+        Application application = get();
+        final ClientResponse response = createApplicationBuilder(getDomain() + "/download/" + application.getFilename()).get(ClientResponse.class);
+
+        handleErrors(response);
+        return response.getEntity(InputStream.class);
+	}
+
     protected final boolean isCloudHubApplicationCreated(final String domain) {
         try {
             getCloudHubApplication();
