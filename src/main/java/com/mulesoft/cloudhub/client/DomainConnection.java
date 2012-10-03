@@ -10,18 +10,18 @@
 
 package com.mulesoft.cloudhub.client;
 
-import com.mulesoft.cloudhub.client.ApplicationStatusChange.ApplicationStatus;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-
-import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
+
+import javax.ws.rs.core.MediaType;
+
+import com.mulesoft.cloudhub.client.ApplicationStatusChange.ApplicationStatus;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * Extends {@class Connection} by providing domain level operations.
@@ -57,7 +57,7 @@ public class DomainConnection extends Connection {
         try {
             getCloudHubApplication();
             return true;
-        } catch (UniformInterfaceException e) {
+        } catch (CloudHubException e) {
             return false;
         }
     }
