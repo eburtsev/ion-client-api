@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.mulesoft.cloudhub.client.ApplicationStatusChange.ApplicationStatus;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 /**
@@ -28,7 +29,7 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class DomainConnection extends Connection {
 
-    public static final String DEFAULT_MULE_VERSION = "3.2.1";
+    public static final String DEFAULT_MULE_VERSION = "3.3.1";
     public static final int DEFAULT_WORKERS = 1;
     public static final long DEFAULT_MAX_WAIT_TIME = 120000L;
     private final String domain;
