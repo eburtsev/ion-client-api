@@ -37,7 +37,7 @@ import com.sun.jersey.core.util.Base64;
 /**
  * Base class for CloudHub interaction.
  */
-public class Connection {
+public class Connection implements CloudhubConnection {
     private Logger logger = LoggerFactory.getLogger(Connection.class);
     
     public static final String DEFAULT_URL = "https://cloudhub.io/";
@@ -112,15 +112,12 @@ public class Connection {
         return this.password;
     }
 
-    public DomainConnection on(final String domain) {
-        return new DomainConnection(this, domain);
-    }
 
     protected final String getAPIURL() {
         return this.url+"api/";
     }
 
-    protected final Builder createBuilder(final String path) {
+    protected Builder createBuilder(final String path) {
         WebResource resource = createResource(path);
         
         return authorizeResource(resource);
@@ -139,8 +136,18 @@ public class Connection {
     }
 
     /**
-     * @return true if provided connection details allow to connect; false otherwise
+     *{@inheritDoc}
      */
+    @Override
+    public final DomainConnection on(final String domain) {
+        return new DomainConnection(this, domain);
+    }
+
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
     public final boolean test() {
         try {
             createBuilder("applications/").get(Object.class);
@@ -163,42 +170,57 @@ public class Connection {
     /**
      * @return all existing applications
      */
+    @Override
     public final List<Application> listApplications() {
         ClientResponse response = createBuilder("applications/").type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
         handleErrors(response);
         return response.getEntity(new GenericType<List<Application>>(){});
     }
 
-    public Notification createNotification(String text, Priority priority, String domain, Map<String, String> customProperties) {
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    @Deprecated
+    public final Notification createNotification(String text, Priority priority, String domain, Map<String, String> customProperties) {
         Notification notification = new Notification();
         notification.setMessage(text);
         notification.setDomain(domain);
         notification.setPriority(priority);
         notification.setCustomProperties(customProperties);
-        
+
+        return this.create(notification);
+    }
+
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public final Notification create(Notification notification){
+
         ClientResponse response = createBuilder("notifications/")
-            .type(MediaType.APPLICATION_JSON_TYPE)
-            .post(ClientResponse.class, notification);
-        
+                .type(MediaType.APPLICATION_JSON_TYPE)
+                .post(ClientResponse.class, notification);
+
         handleErrors(response);
-        
+
         // we got the location, ow fetch the resource
         Builder notificationResource = authorizeResource(client.resource(response.getLocation()));
         response = notificationResource.get(ClientResponse.class);
-        
+
         handleErrors(response);
-        
+
         return response.getEntity(Notification.class);
     }
 
 
     /**
-     * @param includeDismissed 
-     * @param offset 
-     * @param maxResults 
-     * @return all existing applications
+     *{@inheritDoc}
      */
-    public final NotificationResults listNotifications(Integer maxResults, Integer offset) {
+    @Override
+    public final NotificationResults listNotifications(Integer maxResults, Integer offset, String tenantId) {
         WebResource resource = createResource("/notifications");
         
         if (maxResults != null) {
@@ -209,12 +231,21 @@ public class Connection {
             resource.queryParam("offset", offset.toString());
         }
 
+        if (tenantId != null ){
+            resource.queryParam("tenantId", tenantId);
+        }
+
       
         ClientResponse response = authorizeResource(resource).type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
         handleErrors(response);
         return response.getEntity(NotificationResults.class);
     }
-    
+
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
     public final void dismissNotification(String href) {
 
         Builder resource =  authorizeResource(this.client.resource(href));
@@ -222,14 +253,128 @@ public class Connection {
         ClientResponse response = resource.type(MediaType.APPLICATION_JSON_TYPE).delete(ClientResponse.class);
         handleErrors(response);
     };
-    
 
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
     public final void dismissAllNotifications() {
         Builder resource = createBuilder("notifications/");
         
         ClientResponse response = resource.type(MediaType.APPLICATION_JSON_TYPE).delete(ClientResponse.class);
         handleErrors(response);
     };
+    
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public final TenantResults listTenants(String domain, Integer limit, Integer offset, String query) {
+    	WebResource resource = this.createResource("applications")
+    								.path(domain)
+    								.path("tenants");
+    	
+    	if (limit != null) {
+    		resource = resource.queryParam("limit", limit.toString());
+    	}
+    	
+    	if (offset != null) {
+    		resource = resource.queryParam("offset", offset.toString());
+    	}
+    	
+    	if (query != null) {
+    		resource = resource.queryParam("query", query);
+    	}
+    								
+    	ClientResponse response = authorizeResource(resource).type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
+    	this.handleErrors(response);
+    	
+    	return response.getEntity(TenantResults.class);
+    }
+    
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public final Tenant getTenant(String domain, String tenantId) {
+    	WebResource resource = this.createResource("applications")
+				.path(domain)
+				.path("tenants")
+				.path(tenantId);
+    	
+    	ClientResponse response = authorizeResource(resource).type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
+    	this.handleErrors(response);
+    	
+    	return response.getEntity(Tenant.class);
+    }
+    
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public final Tenant create(Tenant tenant, String domain) {
+    	WebResource resource = this.createResource("applications")
+				.path(domain)
+				.path("tenants");
+    	
+    	ClientResponse response = authorizeResource(resource).entity(tenant).type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class);
+    	this.handleErrors(response);
+    	
+    	return response.getEntity(Tenant.class);
+    }
+    
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public final Tenant update(Tenant tenant, String domain) {
+    	WebResource resource = this.createResource("applications")
+				.path(domain)
+				.path("tenants")
+				.path(tenant.getId());
+    	
+    	ClientResponse response = authorizeResource(resource).entity(tenant).type(MediaType.APPLICATION_JSON_TYPE).put(ClientResponse.class);
+    	this.handleErrors(response);
+    	
+    	return response.getEntity(Tenant.class);
+    }
+    
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public final void delete(String tenantId, String domain) {
+    	WebResource resource = this.createResource("applications")
+				.path(domain)
+				.path("tenants")
+				.path(tenantId);
+    	
+    	ClientResponse response = authorizeResource(resource).type(MediaType.APPLICATION_JSON_TYPE).delete(ClientResponse.class);
+    	this.handleErrors(response);
+    }
+    
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void deleteTenants(String domain, List<String> tenantIds) {
+    	if (tenantIds == null || tenantIds.isEmpty()) {
+    		if (logger.isDebugEnabled()) {
+    			logger.warn("tenantIds collection is null or empty. Exiting without doing anything");
+    		}
+    		
+    		return;
+    	}
+    	
+    	WebResource resource = this.createResource("applications")
+				.path(domain)
+				.path("tenants");
+    	
+    	ClientResponse response = authorizeResource(resource).entity(tenantIds).type(MediaType.APPLICATION_JSON_TYPE).delete(ClientResponse.class);
+    	this.handleErrors(response);
+    }
+    
     
     protected void handleErrors(ClientResponse response) {
         if (response.getStatus() == 404) {
