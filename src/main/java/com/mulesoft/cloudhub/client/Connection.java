@@ -40,6 +40,12 @@ import org.slf4j.LoggerFactory;
 public class Connection implements CloudhubConnection
 {
 
+    public static final String TENANT_CREATION_ERROR_MESSAGE = "Tenant %s could not be created. Server returned an status code of %s, " +
+                                                               "with a message %s";
+
+    public static final String TENANT_UPDATE_ERROR_MESSAGE = "Tenant %s could not be updated. Server returned an status code of %s, " +
+                                                               "with a message %s";
+
     private Logger logger = LoggerFactory.getLogger(Connection.class);
 
     public static final String DEFAULT_URL = "https://cloudhub.io/";
@@ -397,7 +403,13 @@ public class Connection implements CloudhubConnection
         ClientResponse response = authorizeResource(resource).entity(tenant).type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class);
         this.handleErrors(response);
 
-        return response.getEntity(Tenant.class);
+        if (ClientResponse.Status.CREATED.equals(response.getClientResponseStatus()))
+        {
+           return tenant;
+        }
+
+        throw new CloudHubException(String.format(TENANT_CREATION_ERROR_MESSAGE, tenant.getId(), response.getClientResponseStatus(),
+                                                  response.getClientResponseStatus().getReasonPhrase()));
     }
 
     /**
@@ -414,8 +426,15 @@ public class Connection implements CloudhubConnection
         ClientResponse response = authorizeResource(resource).entity(tenant).type(MediaType.APPLICATION_JSON_TYPE).put(ClientResponse.class);
         this.handleErrors(response);
 
-        return response.getEntity(Tenant.class);
+        if (ClientResponse.Status.OK.equals(response.getClientResponseStatus()))
+        {
+            return tenant;
+        }
+
+        throw new CloudHubException(String.format(TENANT_UPDATE_ERROR_MESSAGE, tenant.getId(), response.getClientResponseStatus(),
+                                                  response.getClientResponseStatus().getReasonPhrase()));
     }
+
 
     /**
      * {@inheritDoc}
