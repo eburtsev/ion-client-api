@@ -25,7 +25,11 @@ public class MultitenantTest
         testApplication.setHasFile(false);
         testApplication.setWorkers(1);
 
-        cloudhubConnection.createApplication(testApplication);
+        try
+        {
+            cloudhubConnection.createApplication(testApplication);
+        }
+        catch (Exception e){}
     }
 
     @Test
@@ -33,9 +37,9 @@ public class MultitenantTest
     {
         Tenant createdTenant = cloudhubConnection.on(APP_NAME).create(tenant(), APP_NAME);
 
-        assertEquals(TENANT_EMAIL, createdTenant.getContactEmail());
+        assertEquals(TENANT_EMAIL, createdTenant.getEmail());
         assertEquals(TENANT_ID, createdTenant.getId());
-        assertEquals(COMPANY_NAME, createdTenant.getCompanyName());
+        assertEquals(COMPANY_NAME, createdTenant.getName());
     }
 
     @Test
@@ -95,10 +99,10 @@ public class MultitenantTest
         insertTenantIgnoringFailure();
 
         Tenant requestTenant = tenant();
-        requestTenant.setContactEmail("another@company.com");
+        requestTenant.setEmail("another@company.com");
         Tenant tenant = cloudhubConnection.on(APP_NAME).update(requestTenant, APP_NAME);
 
-        assertEquals("another@company.com", tenant.getContactEmail());
+        assertEquals("another@company.com", tenant.getEmail());
     }
 
     private void insertTenantIgnoringFailure()
@@ -115,9 +119,9 @@ public class MultitenantTest
     private Tenant tenant()
     {
         Tenant tenant = new Tenant();
-        tenant.setContactEmail(TENANT_EMAIL);
+        tenant.setEmail(TENANT_EMAIL);
         tenant.setId(TENANT_ID);
-        tenant.setCompanyName(COMPANY_NAME);
+        tenant.setName(COMPANY_NAME);
         return tenant;
     }
 

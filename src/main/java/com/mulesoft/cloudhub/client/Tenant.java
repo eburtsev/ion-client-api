@@ -12,9 +12,16 @@ public class Tenant
     private String id;
     private String href;
     private Date created;
+    @Deprecated
     private String companyName;
+    @Deprecated
     private String contactName;
+    @Deprecated
     private String contactEmail;
+
+    private String name;
+    private String email;
+
     private boolean enabled;
     private Map<String, String> configuration;
 
@@ -48,34 +55,40 @@ public class Tenant
         this.created = created;
     }
 
+    @Deprecated
     public String getCompanyName()
     {
         return companyName;
     }
 
+    @Deprecated
     public void setCompanyName(String companyName)
     {
-        this.companyName = companyName;
+        this.name = companyName;
     }
 
+    @Deprecated
     public String getContactName()
     {
-        return contactName;
+        return name;
     }
 
+    @Deprecated
     public void setContactName(String contactName)
     {
         this.contactName = contactName;
     }
 
+    @Deprecated
     public String getContactEmail()
     {
-        return contactEmail;
+        return email;
     }
 
+    @Deprecated
     public void setContactEmail(String contactEmail)
     {
-        this.contactEmail = contactEmail;
+        this.email = contactEmail;
     }
 
     public boolean isEnabled()
@@ -96,6 +109,26 @@ public class Tenant
     public void setConfiguration(Map<String, String> configuration)
     {
         this.configuration = configuration;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getEmail()
+    {
+        return email;
+    }
+
+    public void setEmail(String email)
+    {
+        this.email = email;
     }
 
     @Override
