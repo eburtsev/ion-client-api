@@ -43,6 +43,22 @@ public class MultitenantTest
     }
 
     @Test
+    public void testCreateTenantSuccessfullyWithOldConfiguration()
+    {
+        Tenant tenant = new Tenant();
+        tenant.setContactEmail(TENANT_EMAIL);
+        tenant.setId(TENANT_ID+"2");
+        tenant.setCompanyName(COMPANY_NAME);
+
+        Tenant createdTenant = cloudhubConnection.on(APP_NAME).create(tenant, APP_NAME);
+
+        assertEquals(TENANT_EMAIL, createdTenant.getEmail());
+        assertEquals(TENANT_ID+"2", createdTenant.getId());
+        assertEquals(COMPANY_NAME, createdTenant.getName());
+    }
+
+
+    @Test
     public void testCreateTenantForInvalidApp()
     {
         try
@@ -78,7 +94,7 @@ public class MultitenantTest
 
         TenantResults tenantResults = cloudhubConnection.on(APP_NAME).listTenants(APP_NAME, 10, 0, null);
 
-        assertEquals(new Long(1), tenantResults.getTotal());
+        assertEquals(new Long(2), tenantResults.getTotal());
         assertEquals(TENANT_ID.toLowerCase(), tenantResults.getData().get(0).getId());
     }
 
