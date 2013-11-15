@@ -65,7 +65,7 @@ public class Tenant
     @Deprecated
     public void setCompanyName(String companyName)
     {
-        this.name = companyName;
+        this.companyName = companyName;
     }
 
     @Deprecated
