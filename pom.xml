@@ -91,6 +91,19 @@
                     <preparationGoals>clean install</preparationGoals>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <ch.test.url>${ch.test.url}</ch.test.url>
+                        <ch.password>${ch.password}</ch.password>
+                        <ch.user>${ch.user}</ch.user>
+                    </systemPropertyVariables>
+                </configuration>
+
+            </plugin>
+
         </plugins>
     </build>
 

@@ -10,7 +10,8 @@ public class NotificationsTest
 {
 
     public static final String APP_NAME = "cloudhub-notifications-connection-api-test-app";
-    private static Connection cloudhubConnection = new Connection("https://cloudhub.io/", "cloudhub-prodev", "Cl0udhub", true);
+    private static Connection cloudhubConnection = new Connection(System.getProperty("ch.test.url"), System.getProperty("ch.user"),
+                                                                  System.getProperty("ch.password"), true);
 
     @BeforeClass
     public static void createApplicationForTest()

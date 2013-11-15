@@ -11,18 +11,23 @@ import org.junit.Test;
 public class AccountSettingsTest
 {
 
+    private Connection connection = new Connection(System.getProperty("ch.test.url"), System.getProperty("ch.user"),
+                                                           System.getProperty("ch.password"), true);
+
     @Test
     @Ignore
     public void testAccountSettings()
     {
-        Account account = new Connection("https://dev.cloudhub.io/", "cloudhub-rest", "Cl0udhub", true).getAccount();
+
+
+        Account account = connection.getAccount();
         System.out.println("account = " + account);
     }
 
     @Test
     public void testDomainAvailable()
     {
-        boolean account = new Connection("https://dev.cloudhub.io/", "cloudhub-rest", "Cl0udhub", true).on("lalalalala").available();
+        boolean account = connection.on("lalalalala").available();
         System.out.println("account = " + account);
     }
 
@@ -36,12 +41,12 @@ public class AccountSettingsTest
         application.setDomain(domain);
         application.setDescription("test");
         application.setWorkers(1);
-        boolean available = new Connection("https://dev.cloudhub.io/", "cloudhub-rest", "Cl0udhub", true).on(domain).available();
+        boolean available = connection.on(domain).available();
         System.out.println("available = " + available);
-        Application application1 = new Connection("https://dev.cloudhub.io/", "cloudhub-rest", "Cl0udhub", true).createApplication(application);
+        Application application1 = connection.createApplication(application);
         System.out.println("application1 = " + application1);
 
-        available = new Connection("https://dev.cloudhub.io/", "cloudhub-rest", "Cl0udhub", true).on(domain).available();
+        available = connection.on(domain).available();
         System.out.println("available = " + available);
     }
 
@@ -54,7 +59,7 @@ public class AccountSettingsTest
         application.setDomain(domain);
         application.setDescription("test");
         application.setWorkers(1);
-        Application.Status available = new Connection("https://dev.cloudhub.io/", "cloudhub-rest", "Cl0udhub", true).on(domain).status();
+        Application.Status available = connection.on(domain).status();
         System.out.println("status = " + available);
 
     }
@@ -62,14 +67,14 @@ public class AccountSettingsTest
     @Test
     @Ignore
     public void testGetAction(){
-        Application cloudHubApplication = new Connection("https://dev.cloudhub.io/", "cloudhub-rest", "Cl0udhub", true).on("test").get();
+        Application cloudHubApplication = connection.on("test").get();
         System.out.println("cloudHubApplication = " + cloudHubApplication);
     }
 
     @Test
     @Ignore
     public void testSupportedMuleVersions(){
-        List<String> supportedApplications = new Connection("https://dev.cloudhub.io/", "cloudhub-rest", "Cl0udhub", true).getSupportedMuleVersions();
+        List<String> supportedApplications = connection.getSupportedMuleVersions();
         System.out.println("supportedApplications = " + supportedApplications);
 
     }

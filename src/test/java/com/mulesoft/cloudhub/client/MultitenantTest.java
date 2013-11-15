@@ -15,7 +15,8 @@ public class MultitenantTest
     public static final String TENANT_ID = "tenantTestId";
     public static final String TENANT_EMAIL = "test@organization.com";
     public static final String COMPANY_NAME = "mulesoft";
-    private static Connection cloudhubConnection = new Connection("https://dev.cloudhub.io/", "cloudhub-rest", "Cl0udhub", true);
+    private static Connection cloudhubConnection = new Connection(System.getProperty("ch.test.url"), System.getProperty("ch.user"),
+                                                                  System.getProperty("ch.password"), true);
 
     @BeforeClass
     public static void createApplicationForTest()
