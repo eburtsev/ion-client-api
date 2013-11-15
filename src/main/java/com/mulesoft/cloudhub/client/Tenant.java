@@ -22,7 +22,8 @@ public class Tenant
     private String name;
     private String email;
 
-    private boolean enabled;
+    private Boolean enabled = Boolean.FALSE;
+
     private Map<String, String> configuration;
 
     public String getId()
@@ -96,8 +97,13 @@ public class Tenant
         return enabled;
     }
 
-    public void setEnabled(boolean enabled)
+    public void setEnabled(Boolean enabled)
     {
+        if ( enabled == null )
+        {
+            enabled = Boolean.FALSE;
+        }
+
         this.enabled = enabled;
     }
 
