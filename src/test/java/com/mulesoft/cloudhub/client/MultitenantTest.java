@@ -56,7 +56,8 @@ public class MultitenantTest
 
         assertEquals(TENANT_EMAIL, createdTenant.getEmail());
         assertEquals(TENANT_ID+"2", createdTenant.getId());
-        assertEquals("name", createdTenant.getName());
+        assertEquals(COMPANY_NAME, createdTenant.getName());
+        assertEquals("", createdTenant.getContactName());
     }
 
 

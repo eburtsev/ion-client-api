@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class AccountSettingsTest
 {
 
@@ -15,7 +16,6 @@ public class AccountSettingsTest
                                                            System.getProperty("ch.password"), true);
 
     @Test
-    @Ignore
     public void testAccountSettings()
     {
 
@@ -33,7 +33,6 @@ public class AccountSettingsTest
 
 
     @Test
-    @Ignore
     public void testCreateDomain()
     {
         Application application = new Application();
@@ -72,7 +71,6 @@ public class AccountSettingsTest
     }
 
     @Test
-    @Ignore
     public void testSupportedMuleVersions(){
         List<String> supportedApplications = connection.getSupportedMuleVersions();
         System.out.println("supportedApplications = " + supportedApplications);

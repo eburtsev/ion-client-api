@@ -59,25 +59,25 @@ public class Tenant
     @Deprecated
     public String getCompanyName()
     {
-        return companyName;
+        return name;
     }
 
     @Deprecated
     public void setCompanyName(String companyName)
     {
-        this.companyName = companyName;
+        this.name = companyName;
     }
 
     @Deprecated
     public String getContactName()
     {
-        return name;
+        return "";
     }
 
     @Deprecated
     public void setContactName(String contactName)
     {
-        this.name = contactName;
+
     }
 
     @Deprecated
