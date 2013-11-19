@@ -77,7 +77,7 @@ public class Tenant
     @Deprecated
     public void setContactName(String contactName)
     {
-        this.contactName = contactName;
+        this.name = contactName;
     }
 
     @Deprecated

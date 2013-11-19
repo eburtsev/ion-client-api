@@ -50,12 +50,13 @@ public class MultitenantTest
         tenant.setContactEmail(TENANT_EMAIL);
         tenant.setId(TENANT_ID+"2");
         tenant.setCompanyName(COMPANY_NAME);
+        tenant.setContactName("name");
 
         Tenant createdTenant = cloudhubConnection.on(APP_NAME).create(tenant, APP_NAME);
 
         assertEquals(TENANT_EMAIL, createdTenant.getEmail());
         assertEquals(TENANT_ID+"2", createdTenant.getId());
-        assertEquals(COMPANY_NAME, createdTenant.getName());
+        assertEquals("name", createdTenant.getName());
     }
 
 
